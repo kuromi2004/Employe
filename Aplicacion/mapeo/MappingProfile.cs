@@ -1,7 +1,6 @@
 using AutoMapper;
 using Employees.Aplicacion.dtos;
 using Employees.Dominio.Entidades;
-using EMPLOYEES.Aplicacion.dtos;
 using static Employees.Aplicacion.dtos.VacacionDto;
 
 namespace Employees.Aplicacion.mapeo

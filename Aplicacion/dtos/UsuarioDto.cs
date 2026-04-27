@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace EMPLOYEES.Aplicacion.dtos{
+namespace Employees.Aplicacion.dtos
+{
     public class UsuarioCreateDTO
     
     {

@@ -1,7 +1,5 @@
 using Employees.Dominio.Entidades;
 using Employees.Aplicacion.dtos;
-using Employees.Aplicacion.dtos; 
-
 namespace Employees.Aplicacion.servicio.IServicios
 {//leer
     public interface IEmpresaReadService : IReadServiceAsync<Empresa, EmpresaDto> { }
@@ -15,7 +13,7 @@ namespace Employees.Aplicacion.servicio.IServicios
     public interface IPeriodoWriteService : IWriteServiceAsync<Periodo, PeriodoDto> { }
     public interface IRegistroJornadaWriteService : IWriteServiceAsync<RegistroJornada, RegistroJornadaDto> { }
     public interface IUsuarioWriteService : IWriteServiceAsync<Usuario, UsuarioCreateDTO> { }
-    public interface IVacacionWriteService : IWriteServiceAsync<Vacacion, VacacionDto.VacacionCreateDTO> { }
+   
     public interface IVacacionWriteService : IWriteServiceAsync<Vacacion, VacacionDto.VacacionCreateDTO>
     {
         Task EvaluarVacacionAsync(VacacionDto.VacacionAprobacionDTO dto);

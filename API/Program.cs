@@ -1,10 +1,14 @@
+using AutoMapper;
 using Employees.Aplicacion.mapeo;
+using Employees.Aplicacion.servicio;
+
+using Employees.Aplicacion.servicio.servicios;
+using Employees.Aplicacion.servicio.IServicios;
 using Employees.Dominio.interfaces;
-using Employees.Infraestructura.Repositorio;
 using Employees.Infraestructura.Contexto;   
+using Employees.Infraestructura.Repositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -12,28 +16,22 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 // Add services to the container.
+builder.Services.AddRazorPages();
 
-builder.Services.AddControllers();
+
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 
-// Add services to the container.
-builder.Services.AddRazorPages();
 
 //database configuracion
 //builder.Services.AddScoped<EmployeesDbContext>();
@@ -53,17 +51,34 @@ builder.Services.AddAutoMapper(cfg => {
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //mapeo de servicios
-builder.Services.AddScoped<IEmpresaService, EmpresaService>();
-builder.Services.AddScoped<IRegistroJornadaService, RegistroJornadaService>();
-builder.Services.AddScoped<IPeriodoService, PeriodoService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IVacacionService, VacacionService>();
+// === LADO DE LECTURA ===
+builder.Services.AddScoped<IEmpresaReadService, EmpresaReadService>(); 
+builder.Services.AddScoped<IPeriodoReadService, PeriodoReadService>();
+builder.Services.AddScoped<IRegistroJornadaReadService, RegistroJornadaReadService>();
+builder.Services.AddScoped<IUsuarioReadService, UsuarioReadService>();
+builder.Services.AddScoped<IVacacionReadService, VacacionReadService>();
+
+// === LADO DE ESCRITURA ===
+builder.Services.AddScoped<IEmpresaWriteService, EmpresaWriteService>();
+builder.Services.AddScoped<IPeriodoWriteService, PeriodoWriteService>();
+builder.Services.AddScoped<IRegistroJornadaWriteService, RegistroJornadaWriteService>();
+builder.Services.AddScoped<IUsuarioWriteService, UsuarioWriteService>();
+builder.Services.AddScoped<IVacacionWriteService, VacacionWriteService>();
 //fin mapeo de servicios
 //
+builder.Services.AddControllers();
 
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<EmployeesDbContext>(options =>
     options.UseInMemoryDatabase("EmployeesDb"));
+
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.MapControllers();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

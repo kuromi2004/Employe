@@ -1,30 +1,32 @@
-using Microsoft.AspNetCore.Mvc;
+using Employees.Aplicacion.CustomException;
 using Employees.Aplicacion.dtos;
 using Employees.Aplicacion.servicio.IServicios;
-using Employees.Aplicacion.CustomException;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Employees.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmpresaController : ControllerBase
+    public class VacacionController : ControllerBase
     {
-        private readonly IEmpresaReadService _readService;
-        private readonly IEmpresaWriteService _writeService;
+        private readonly IVacacionReadService _readService;
+        private readonly IVacacionWriteService _writeService;
 
-        public EmpresaController(IEmpresaReadService readService, IEmpresaWriteService writeService)
+        public VacacionController(IVacacionReadService readService, IVacacionWriteService writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
 
+        // --- QUERIES (Devuelven VacacionResponseDTO) ---
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmpresaDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<VacacionDto.VacacionResponseDTO>>> GetAll()
         {
             try
             {
-                var empresas = await _readService.GetAllAsync();
-                return Ok(empresas);
+                var vacaciones = await _readService.GetAllAsync();
+                return Ok(vacaciones);
             }
             catch (EntityNotFoundException ex)
             {
@@ -33,12 +35,12 @@ namespace Employees.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmpresaDto>> GetById(int id)
+        public async Task<ActionResult<VacacionDto.VacacionResponseDTO>> GetById(int id)
         {
             try
             {
-                var empresa = await _readService.GetByIdAsync(id);
-                return Ok(empresa);
+                var vacacion = await _readService.GetByIdAsync(id);
+                return Ok(vacacion);
             }
             catch (EntityNotFoundException ex)
             {
@@ -46,22 +48,25 @@ namespace Employees.API.Controllers
             }
         }
 
+        // --- COMMANDS (Reciben VacacionCreateDTO) ---
+
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] EmpresaDto dto)
+        public async Task<ActionResult> Create([FromBody] VacacionDto.VacacionCreateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             await _writeService.AddAsync(dto);
-           
-            return CreatedAtAction(nameof(GetById), new { id = dto.IDEmpresa }, dto);
+
+            
+            return Ok(new { message = "Solicitud de vacaciones creada exitosamente." });
         }
 
+        
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] EmpresaDto dto)
+        public async Task<ActionResult> Update(int id, [FromBody] VacacionDto.VacacionCreateDTO dto)
         {
-            if (id != dto.ID_empresa)
-                return BadRequest(new { message = "El ID de la ruta no coincide con el del objeto." });
-
+            // Para este ejemplo básico usamos el Update genérico, pero ten en cuenta
+            // que podrías necesitar lógica específica en VacacionWriteService.UpdateAsync
             await _writeService.UpdateAsync(dto);
             return NoContent();
         }
@@ -72,6 +77,7 @@ namespace Employees.API.Controllers
             await _writeService.DeleteAsync(id);
             return NoContent();
         }
+       
 
         [HttpPatch("{id}/evaluar")]
         public async Task<ActionResult> EvaluarSolicitud(int id, [FromBody] VacacionDto.VacacionAprobacionDTO dto)

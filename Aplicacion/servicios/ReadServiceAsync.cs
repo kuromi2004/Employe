@@ -1,7 +1,7 @@
 using AutoMapper;
 using Employees.Aplicacion.servicio.IServicios;
 using Employees.Dominio.interfaces;
-using aplicacion.customexception;
+using Employees.Aplicacion.CustomException;
 
 namespace Employees.Aplicacion.servicio
 {

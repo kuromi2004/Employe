@@ -9,8 +9,8 @@ namespace Employees.Aplicacion.servicio
 		where TEntity : class
 		where TDto : class
 	{
-		private readonly IMapper _mapper;
-		private readonly IUnitOfWork _unitOfWork;
+		protected readonly IMapper _mapper;
+		protected readonly IUnitOfWork _unitOfWork;
 
 		public WriteServiceAsync(IUnitOfWork unitOfWork, IMapper mapper)
 		{
@@ -18,21 +18,21 @@ namespace Employees.Aplicacion.servicio
 			_mapper = mapper;
 		}
 
-		public async Task AddAsync(TDto dto)
+		public virtual async Task AddAsync(TDto dto)
 		{
 			var entity = _mapper.Map<TEntity>(dto);
 			await _unitOfWork.Repository<TEntity>().AddAsync(entity);
 			await _unitOfWork.SaveChangesAsync();
 		}
 
-		public async Task UpdateAsync(TDto dto)
+		public virtual async Task UpdateAsync(TDto dto)
 		{
 			var entity = _mapper.Map<TEntity>(dto);
 			await _unitOfWork.Repository<TEntity>().UpdateAsync(entity);
 			await _unitOfWork.SaveChangesAsync();
 		}
 
-		public async Task DeleteAsync(int id)
+		public virtual async Task DeleteAsync(int id)
 		{
 			await _unitOfWork.Repository<TEntity>().DeleteByIdAsync(id);
 			await _unitOfWork.SaveChangesAsync();

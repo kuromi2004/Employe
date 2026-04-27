@@ -6,7 +6,7 @@ namespace Employees.Aplicacion.servicio.IServicios
 
     {
         Task AddAsync(TDto dto);
-        Task DeleteAsync(TDto dto);
+        Task DeleteAsync(int id);
         Task UpdateAsync(TDto dto);
     }
 }
